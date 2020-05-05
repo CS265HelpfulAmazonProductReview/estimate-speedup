@@ -68,6 +68,7 @@ indexer = StringIndexer(inputCol="category", outputCol="label")
 indexer_fitted = indexer.fit(data_df_tfidf)
 data_prepared_df = indexer_fitted.transform(data_df_tfidf)
 data_prepared_df = data_prepared_df.orderBy(rand())
+data_prepared_df.select("label").show()
 train, test = data_prepared_df.randomSplit([0.9, 0.1], seed=205);
 
 # train
