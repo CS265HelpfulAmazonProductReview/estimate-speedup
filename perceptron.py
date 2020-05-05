@@ -75,9 +75,11 @@ train, test = data_prepared_df.randomSplit([0.8, 0.2], seed=205);
 input_dim = len(train.select("features").first()[0])
 print("input_dim {}".format(input_dim))
 layers = [input_dim, 512, 512, 2]
-perceptron = MultilayerPerceptronClassifier(maxIter=100, layers=layers)
+perceptron = MultilayerPerceptronClassifier(maxIter=200, layers=layers)
 
-paramGrid = ParamGridBuilder().addGrid(perceptron.blockSize, [8, 16, 32, 64, 128]).build()
+paramGrid = ParamGridBuilder().addGrid(perceptron.blockSize, [8, 16, 32, 64, 128])\
+                                .addGrid(perceptron.stepSize, [0.001, 0.005, 0.01, 0.02, 0.05, 0.1])\
+                                .build()
 tvs = TrainValidationSplit(estimator = perceptron,
 							estimatorParamMaps=paramGrid,
 							evaluator=BinaryClassificationEvaluator(),
