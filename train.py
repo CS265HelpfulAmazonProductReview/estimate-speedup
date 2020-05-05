@@ -72,5 +72,5 @@ log_reg = LogisticRegression(
 )
 # log_reg_fitted = log_reg.fit(data_prepared_df)
 log_reg_fitted = log_reg.fit(train)
-log_reg_fitted.save("output/reviews_model.model")
+# log_reg_fitted.save("output/reviews_model.model")
 log_reg_fitted.transform(test).select("features", "label", "prediction").show()
