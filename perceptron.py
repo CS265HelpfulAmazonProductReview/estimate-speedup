@@ -85,6 +85,7 @@ perceptron_fitted = perceptron.fit(train)
 
 prediction = perceptron_fitted.transform(test)
 evaluator = BinaryClassificationEvaluator(rawPredictionCol='probability', labelCol = 'label')
+prediction.select("features", "label", "prediction").show()
 AUC = evaluator.evaluate(prediction, {evaluator.metricName: "areaUnderROC"})
 AUP = evaluator.evaluate(prediction, {evaluator.metricName: "areaUnderPR"})
 print("Area under ROC = {}".format(AUC))
