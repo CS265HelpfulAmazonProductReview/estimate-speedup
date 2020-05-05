@@ -87,7 +87,7 @@ lsvc_fitted = tvs.fit(train)
 
 prediction = lsvc_fitted.transform(test)
 prediction.select("label", "prediction").show()
-evaluator = BinaryClassificationEvaluator(rawPredictionCol='probability', labelCol = 'label')
+evaluator = BinaryClassificationEvaluator(rawPredictionCol='rawPrediction', labelCol = 'label')
 AUC = evaluator.evaluate(prediction, {evaluator.metricName: "areaUnderROC"})
 AUP = evaluator.evaluate(prediction, {evaluator.metricName: "areaUnderPR"})
 print("Area under ROC = {}".format(AUC))
