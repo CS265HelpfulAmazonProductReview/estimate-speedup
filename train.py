@@ -83,8 +83,7 @@ log_reg_fitted.transform(test).select("features", "label", "prediction").show()
 # parameter tunning
 log_reg = LogisticRegression(maxIter = 100)
 paramGrid = ParamGridBuilder()\
-	.addGrid(log_reg.regParam, [0.3, 0.2, 0.1, 0.05, 0.01])\
-	.addGrid(log_reg.fitIntercept, [False, True])\
+	.addGrid(log_reg.regParam, [0.5, 0.4, 0.3, 0.2, 0.1, 0.05, 0.01, 0.0])\
 	.addGrid(log_reg.elasticNetParam, [1.0, 0.5, 0.0])\
 	.build()
 tvs = TrainValidationSplit(estimator = log_reg,
