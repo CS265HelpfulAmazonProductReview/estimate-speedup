@@ -80,7 +80,7 @@ log_reg_fitted = log_reg.fit(train)
 log_reg_fitted.transform(test).select("features", "label", "prediction").show()
 """
 
-# cross validation
+# parameter tunning
 log_reg = LogisticRegression(maxIter = 100)
 paramGrid = ParamGridBuilder()\
 	.addGrid(log_reg.regParam, [0.3, 0.2, 0.1, 0.05, 0.01])\
@@ -95,7 +95,11 @@ log_reg_fitted = tvs.fit(train)
 # log_reg_fitted.transform(test).select("features", "label", "prediction").show()
 
 # metrics
-prediction = test.rdd.map(lambda lp: (float(log_reg_fitted.predict(lp.features)), lp.label))
-metrics = BinaryClassificationMetrics(prediction)
-print("Area under ROC = {}".format(metrics.areUnderROC))
-print("Area under PR = {}".format(metrics.areaUnderPR))
+#prediction = test.rdd.map(lambda lp: (float(log_reg_fitted.predict(lp.features)), lp.label))
+#metrics = BinaryClassificationMetrics(prediction)
+prediction = log_reg_fitted.transform(test)
+evaluator = BinaryClassificationEvaluator(rawPredictionCol='probability', labelCol = 'label')
+AUC = evaluator.evaluate(prediction, {evaluator.metricName: "areaUnderROC"})
+AUP = evaluator.evaluate(prediction, {evaluator.metricName: "areaUnderPR"})
+print("Area under ROC = {}".format(AUC))
+print("Area under PR = {}".format(AUP))
