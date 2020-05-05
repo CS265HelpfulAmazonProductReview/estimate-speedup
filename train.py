@@ -5,6 +5,8 @@ from pyspark.ml import Pipeline
 from pyspark.ml.feature import RegexTokenizer, StopWordsRemover, HashingTF, IDF 
 from pyspark.ml.feature import StringIndexer
 from pyspark.ml.classification import LogisticRegression
+from pyspark.ml.tuning import ParamGridBuilder, TrainValidationSplit
+from pyspark.ml.evaluation import BinaryClassificationEvaluator
 # from pyspark.ml.evaluation import MulticlassClassificationEvaluator
 # from nltk.stem.lancaster import LancasterStemmer
 
@@ -66,6 +68,7 @@ data_prepared_df = indexer_fitted.transform(data_df_tfidf)
 train, test = data_prepared_df.randomSplit([0.9, 0.1], seed=205);
 
 # train
+"""
 log_reg = LogisticRegression(
     featuresCol="features", labelCol="label", predictionCol="prediction",
     maxIter=100, regParam=0.3, elasticNetParam=0
@@ -73,4 +76,19 @@ log_reg = LogisticRegression(
 # log_reg_fitted = log_reg.fit(data_prepared_df)
 log_reg_fitted = log_reg.fit(train)
 # log_reg_fitted.save("output/reviews_model.model")
+log_reg_fitted.transform(test).select("features", "label", "prediction").show()
+"""
+
+# cross validation
+log_reg = LogisticRegression(maxIter = 100)
+ParamGird = ParamGridBuilder()\
+	.addGrid(log_reg.regParam, [0.3, 0.2, 0.1, 0.05, 0.01])\
+	.addGrid(log_reg.fitIntercept, [False, True])\
+	.addGrid(log_reg.elasticNetParam, [1.0, 0.5, 0.0])\
+	.build()
+tvs = TrainValidationSplit(estimator = log_reg,
+							estimatorParamMaps=paramGrid,
+							evaluator=BinaryClassificationEvaluator(),
+							trainRatio=0.8)
+log_reg_fitted = tvs.fit(train)
 log_reg_fitted.transform(test).select("features", "label", "prediction").show()
