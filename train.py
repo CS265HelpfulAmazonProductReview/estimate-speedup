@@ -8,6 +8,7 @@ from pyspark.ml.classification import LogisticRegression
 from pyspark.ml.tuning import ParamGridBuilder, TrainValidationSplit
 from pyspark.ml.evaluation import BinaryClassificationEvaluator
 from pyspark.mllib.evaluation import BinaryClassificationMetrics
+from pyspark.sql.functions import rand
 # from pyspark.ml.evaluation import MulticlassClassificationEvaluator
 # from nltk.stem.lancaster import LancasterStemmer
 
@@ -66,6 +67,7 @@ data_df_tfidf = inv_doc_freq_fitted.transform(data_df_tf)
 indexer = StringIndexer(inputCol="category", outputCol="label")
 indexer_fitted = indexer.fit(data_df_tfidf)
 data_prepared_df = indexer_fitted.transform(data_df_tfidf)
+data_prepared_df = data_prepared_df.orderBy(rand())
 train, test = data_prepared_df.randomSplit([0.9, 0.1], seed=205);
 
 # train
