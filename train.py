@@ -62,12 +62,15 @@ data_df_tfidf = inv_doc_freq_fitted.transform(data_df_tf)
 # encode classes
 indexer = StringIndexer(inputCol="category", outputCol="label")
 indexer_fitted = indexer.fit(data_df_tfidf)
-data_prepared_df = indexer_fitted.transform(data_df_tfidf)
+# data_prepared_df = indexer_fitted.transform(data_df_tfidf)
+train, test = data_df_tfidf.randomSplit([0.9, 0.1], seed=205);
 
 # train
 log_reg = LogisticRegression(
     featuresCol="features", labelCol="label", predictionCol="prediction",
     maxIter=100, regParam=0.3, elasticNetParam=0
 )
-log_reg_fitted = log_reg.fit(data_prepared_df)
+# log_reg_fitted = log_reg.fit(data_prepared_df)
+log_reg_fitted = log_reg.fit(train)
 log_reg_fitted.save("output/reviews_model.model")
+log_reg_fitted.transform(test).select("features", "label", "prediction").show()
