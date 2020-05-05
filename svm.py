@@ -76,6 +76,7 @@ input_dim = len(train.select("features").first()[0])
 lsvc = LinearSVC(maxIter=100)
 
 paramGrid = ParamGridBuilder().addGrid(lsvc.regParam, [0.001, 0.005, 0.01, 0.05, 0.1, 0.2, 0.5])\
+                                .addGrid(lsvc.threshold, [-0.5, -0.2, 0.0, 0.2, 0.5])
                                 .build()
 tvs = TrainValidationSplit(estimator = lsvc,
 							estimatorParamMaps=paramGrid,
@@ -84,7 +85,7 @@ tvs = TrainValidationSplit(estimator = lsvc,
 
 lsvc_fitted = tvs.fit(train)
 
-prediction = perceptron_fitted.transform(test)
+prediction = lsvc_fitted.transform(test)
 prediction.select("label", "prediction").show()
 evaluator = BinaryClassificationEvaluator(rawPredictionCol='probability', labelCol = 'label')
 AUC = evaluator.evaluate(prediction, {evaluator.metricName: "areaUnderROC"})
