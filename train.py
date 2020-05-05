@@ -95,7 +95,7 @@ log_reg_fitted = tvs.fit(train)
 # log_reg_fitted.transform(test).select("features", "label", "prediction").show()
 
 # metrics
-prediction = test.map(lambda lp: (float(log_reg_fitted.predict(lp.features)), lp.label))
+prediction = test.rdd.map(lambda lp: (float(log_reg_fitted.predict(lp.features)), lp.label))
 metrics = BinaryClassificationMetrics(prediction)
 print("Area under ROC = {}".format(metrics.areUnderROC))
 print("Area under PR = {}".format(metrics.areaUnderPR))
