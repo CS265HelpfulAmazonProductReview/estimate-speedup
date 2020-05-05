@@ -75,15 +75,15 @@ train, test = data_prepared_df.randomSplit([0.9, 0.1], seed=205);
 input_dim = len(train.select("features").first()[0])
 print("input_dim {}".format(input_dim))
 layers = [input_dim, 512, 512, 2]
-perceptron = MultilayerPerceptronClassifier(maxIter=200, layers=layers, blockSize=8)
-"""
+perceptron = MultilayerPerceptronClassifier(maxIter=100, layers=layers)
+
 paramGrid = ParamGridBuilder().addGrid(perceptron.blockSize, [8, 16, 32, 64, 128]).build()
 tvs = TrainValidationSplit(estimator = perceptron,
 							estimatorParamMaps=paramGrid,
 							evaluator=BinaryClassificationEvaluator(),
 							trainRatio=0.8)
-"""
-perceptron_fitted = perceptron.fit(train)
+
+perceptron_fitted = tvs.fit(train)
 
 prediction = perceptron_fitted.transform(test)
 prediction.select("label", "prediction").show()
