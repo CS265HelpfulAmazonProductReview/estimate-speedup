@@ -76,7 +76,7 @@ input_dim = len(train.select("features").first()[0])
 lsvc = LinearSVC(maxIter=100)
 
 paramGrid = ParamGridBuilder().addGrid(lsvc.regParam, [0.001, 0.005, 0.01, 0.05, 0.1, 0.2, 0.5])\
-                                .addGrid(lsvc.threshold, [-0.5, -0.2, 0.0, 0.2, 0.5])
+                                .addGrid(lsvc.threshold, [-0.5, -0.2, 0.0, 0.2, 0.5])\
                                 .build()
 tvs = TrainValidationSplit(estimator = lsvc,
 							estimatorParamMaps=paramGrid,
