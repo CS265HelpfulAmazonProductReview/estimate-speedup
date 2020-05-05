@@ -7,6 +7,7 @@ from pyspark.ml.feature import StringIndexer
 from pyspark.ml.classification import LogisticRegression
 from pyspark.ml.tuning import ParamGridBuilder, TrainValidationSplit
 from pyspark.ml.evaluation import BinaryClassificationEvaluator
+from pyspark.mllib.evaluation import BinaryClassificationMetrics
 # from pyspark.ml.evaluation import MulticlassClassificationEvaluator
 # from nltk.stem.lancaster import LancasterStemmer
 
@@ -91,4 +92,10 @@ tvs = TrainValidationSplit(estimator = log_reg,
 							evaluator=BinaryClassificationEvaluator(),
 							trainRatio=0.8)
 log_reg_fitted = tvs.fit(train)
-log_reg_fitted.transform(test).select("features", "label", "prediction").show()
+# log_reg_fitted.transform(test).select("features", "label", "prediction").show()
+
+# metrics
+prediction = test.map(lambda lp: (float(log_reg_fitted.predict(lp.features)), lp.label))
+metrics = BinaryClassificationMetrics(prediction)
+print("Area under ROC = {}".format(metrics.areUnderROC))
+print("Area under PR = {}".format(metrics.areaUnderPR))
