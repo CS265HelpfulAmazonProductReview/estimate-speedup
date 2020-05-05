@@ -72,7 +72,7 @@ data_prepared_df.select("label").show()
 train, test = data_prepared_df.randomSplit([0.9, 0.1], seed=205);
 
 # parameter tunning
-layers = [512, 512, 2]
+layers = [5000, 512, 512, 2]
 perceptron = MultilayerPerceptronClassifier(maxIter = 100, layers=layers, blockSize=8)
 """
 paramGrid = ParamGridBuilder().addGrid(perceptron.blockSize, [8, 16, 32, 64, 128]).build()
