@@ -62,8 +62,8 @@ data_df_tfidf = inv_doc_freq_fitted.transform(data_df_tf)
 # encode classes
 indexer = StringIndexer(inputCol="category", outputCol="label")
 indexer_fitted = indexer.fit(data_df_tfidf)
-# data_prepared_df = indexer_fitted.transform(data_df_tfidf)
-train, test = data_df_tfidf.randomSplit([0.9, 0.1], seed=205);
+data_prepared_df = indexer_fitted.transform(data_df_tfidf)
+train, test = data_prepared_df.randomSplit([0.9, 0.1], seed=205);
 
 # train
 log_reg = LogisticRegression(
