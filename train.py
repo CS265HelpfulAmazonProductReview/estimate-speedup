@@ -81,7 +81,7 @@ log_reg_fitted.transform(test).select("features", "label", "prediction").show()
 
 # cross validation
 log_reg = LogisticRegression(maxIter = 100)
-paramGird = ParamGridBuilder()\
+paramGrid = ParamGridBuilder()\
 	.addGrid(log_reg.regParam, [0.3, 0.2, 0.1, 0.05, 0.01])\
 	.addGrid(log_reg.fitIntercept, [False, True])\
 	.addGrid(log_reg.elasticNetParam, [1.0, 0.5, 0.0])\
