@@ -55,7 +55,7 @@ data_df_filtered = remover.transform(data_df_tokenized)
 
 # hashing term frequency 
 hashing_term_freq = \
-    HashingTF(inputCol="words", outputCol="featuresRaw", numFeatures=100)
+    HashingTF(inputCol="words", outputCol="featuresRaw", numFeatures=200)
 data_df_tf = hashing_term_freq.transform(data_df_filtered)
 
 # inverse document frequency
