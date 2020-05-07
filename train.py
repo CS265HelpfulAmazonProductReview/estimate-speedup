@@ -13,18 +13,19 @@ from pyspark.sql.functions import rand
 # from nltk.stem.lancaster import LancasterStemmer
 
 # local mode
+"""
 spark = SparkSession \
     .builder \
     .appName("IsItHelpfull") \
     .getOrCreate()
-
+"""
 # cluster mode
-# spark = SparkSession \
-#     .builder \
-#     .appName("IsItHelpfull") \
-#     .config("spark.executor.instances", 4) \
-#     .config("spark.executor.cores", 1) \
-#     .getOrCreate()
+spark = SparkSession \
+    .builder \
+    .appName("IsItHelpfull") \
+    .config("spark.executor.instances", 4) \
+    .config("spark.executor.cores", 1) \
+    .getOrCreate()
 
 data_df = spark \
     .read.parquet("output/reviews_preprocessed.parquet")

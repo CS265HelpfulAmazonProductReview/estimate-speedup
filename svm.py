@@ -13,19 +13,19 @@ from pyspark.sql.functions import rand
 # from nltk.stem.lancaster import LancasterStemmer
 
 # local mode
+"""
 spark = SparkSession \
     .builder \
     .appName("IsItHelpfull") \
-    .master("local[*]") \
     .getOrCreate()
-
+"""
 # cluster mode
-# spark = SparkSession \
-#     .builder \
-#     .appName("IsItHelpfull") \
-#     .config("spark.executor.instances", 4) \
-#     .config("spark.executor.cores", 1) \
-#     .getOrCreate()
+spark = SparkSession \
+    .builder \
+    .appName("IsItHelpfull") \
+    .config("spark.executor.instances", 4) \
+    .config("spark.executor.cores", 1) \
+    .getOrCreate()
 
 data_df = spark \
     .read.parquet("output/reviews_preprocessed.parquet")
@@ -81,7 +81,8 @@ paramGrid = ParamGridBuilder().addGrid(lsvc.regParam, [0.001, 0.005, 0.01, 0.05,
 tvs = TrainValidationSplit(estimator = lsvc,
 							estimatorParamMaps=paramGrid,
 							evaluator=BinaryClassificationEvaluator(),
-							trainRatio=0.8)
+							trainRatio=0.8,
+                            parallelism=8)
 
 lsvc_fitted = tvs.fit(train)
 
