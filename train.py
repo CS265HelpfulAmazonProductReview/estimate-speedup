@@ -16,7 +16,6 @@ from pyspark.sql.functions import rand
 spark = SparkSession \
     .builder \
     .appName("IsItHelpfull") \
-    .master("local[*]") \
     .getOrCreate()
 
 # cluster mode
@@ -92,6 +91,7 @@ paramGrid = ParamGridBuilder()\
 tvs = TrainValidationSplit(estimator = log_reg,
 							estimatorParamMaps=paramGrid,
 							evaluator=BinaryClassificationEvaluator(),
+                            parallelism=8;
 							trainRatio=0.8)
 log_reg_fitted = tvs.fit(train)
 # log_reg_fitted.transform(test).select("features", "label", "prediction").show()
