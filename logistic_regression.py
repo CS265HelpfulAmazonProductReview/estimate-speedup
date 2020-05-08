@@ -1,7 +1,7 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf, col, rand
 from pyspark.sql.types import *
-from pyspark.ml.feature import RegexTokenizer, StopWordsRemover, HashingTF, IDF 
+from pyspark.ml.feature import RegexTokenizer, StopWordsRemover, HashingTF, IDF, StringIndexer
 
 
 # local mode
