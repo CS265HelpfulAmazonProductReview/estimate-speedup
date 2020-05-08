@@ -109,8 +109,7 @@ def random_tune(traindf):
     return result
 
 results = replicated_train.groupby("replication_id").apply(random_tune)
-results.show()
-results.sort(F.desc("AUC")).show()
+results.sort(F.desc("AUC"))
 # train
 """
 log_reg = LogisticRegression(
