@@ -10,7 +10,7 @@ from pyspark.ml.feature import RegexTokenizer, StopWordsRemover, HashingTF, IDF,
 spark = SparkSession \
     .builder \
     .appName("IsItHelpfull") \
-    .master("local[4]") \
+    .master("local[1]") \
     .getOrCreate()
 
 # cluster mode
@@ -38,7 +38,7 @@ review_df = spark \
     .select("reviewText", "category") \
     .cache()
 
-print(review_df.rdd)
+"""
 
 # up-sample the else category, so that #else = #good
 review_df_good = review_df.where(col("category") == "good").cache()
@@ -68,14 +68,14 @@ review_df_tf = hashing_term_freq.transform(review_df_filtered)
 # inverse document frequency
 inv_doc_freq = IDF(inputCol="featuresRaw", outputCol="features", minDocFreq=5)
 inv_doc_freq_fitted = inv_doc_freq.fit(review_df_tf)
-review_df_tfidf = inv_doc_freq_fitted.transform(data_df_tf)
+review_df_tfidf = inv_doc_freq_fitted.transform(review_df_tf)
 
 # encode classes
 indexer = StringIndexer(inputCol="category", outputCol="label")
 indexer_fitted = indexer.fit(review_df_tfidf)
 review_prepared_df = indexer_fitted.transform(review_df_tfidf)
 
-"""
+# shuffle and split dataset
 review_prepared_df = review_prepared_df.orderBy(rand())
 train, test = data_prepared_df.randomSplit([0.9, 0.1], seed=205);
 """
