@@ -98,6 +98,7 @@ def random_tune(traindf):
     evaluator = BinaryClassificationEvaluator(rawPredictionCol='probability', labelCol = 'label')
     AUC = evaluator.evaluate(prediction, {evaluator.metricName: "areaUnderROC"})
     AUP = evaluator.evaluate(prediction, {evaluator.metricName: "areaUnderPR"})
+    print(AUC)
     result = pd.DataFrame({'regParam', regParam,
                             'elasticNetParam', elasticNetParam,
                             'AUC', AUC,
@@ -106,7 +107,7 @@ def random_tune(traindf):
     return result
 
 results = replicated_train.groupby("replication_id").apply(random_tune)
-results.sort(F.desc("AUC")).show()
+results.sort(F.desc("AUC"))
 # train
 """
 log_reg = LogisticRegression(
