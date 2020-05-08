@@ -11,7 +11,7 @@ spark = SparkSession \
 	.getOrCreate()
 """
 
-cluster mode
+# cluster mode
 spark = SparkSession \
 	.builder \
 	.appName("IsItHelpfull") \
