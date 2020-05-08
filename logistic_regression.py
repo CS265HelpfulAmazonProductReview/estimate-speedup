@@ -1,3 +1,4 @@
+from pyspark import SparkContext
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf, col, rand
 from pyspark.sql.types import *
@@ -5,6 +6,7 @@ from pyspark.ml.feature import RegexTokenizer, StopWordsRemover, HashingTF, IDF,
 
 
 # local mode
+
 spark = SparkSession \
     .builder \
     .appName("IsItHelpfull") \
@@ -12,12 +14,16 @@ spark = SparkSession \
     .getOrCreate()
 
 # cluster mode
-# spark = SparkSession \
-#     .builder \
-#     .appName("IsItHelpfull") \
-#     .config("spark.executor.instances", 4) \
-#     .config("spark.executor.cores", 1) \
-#     .getOrCreate()
+"""
+spark = SparkSession \
+	.builder \
+	.appName("IsItHelpfull") \
+	.config("spark.executor.instances", 4) \
+	.config("spark.executor.cores", 1) \
+	.getOrCreate()
+"""
+
+# read json file
 
 def category_review(votes):
     score = votes[0]/votes[1]
@@ -31,6 +37,8 @@ review_df = spark \
     .withColumn("category", category_review_udf("helpful")) \
     .select("reviewText", "category") \
     .cache()
+
+review_df.rdd.show()
 
 # up-sample the else category, so that #else = #good
 review_df_good = review_df.where(col("category") == "good").cache()
