@@ -48,19 +48,18 @@ review_df_preprocessed.write.parquet(
 """
 review_preprocessed_df = spark \
 	.read.parquet("output/reviews_preprocessed.parquet")
-"""
 review_preprocessed_df.show()
 review_preprocessed_df.groupBy("category").count().show()
-
-"""
 data_df = spark \
 	.read.parquet("output/reviews_preprocessed.parquet")
 """
 
+review_df_preprocessed.show()
+
 # tokenize words
 tokenizer = \
 	RegexTokenizer(inputCol="reviewText", outputCol="wordsRaw", pattern="\\W")
-data_df_tokenized = tokenizer.transform(review_preprocessed_df)
+data_df_tokenized = tokenizer.transform(review_df_preprocessed)
 
 # remove stop words
 remover = StopWordsRemover(inputCol="wordsRaw", outputCol="words")
