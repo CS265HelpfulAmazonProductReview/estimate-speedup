@@ -33,7 +33,7 @@ def category_review(votes):
 category_review_udf = udf(category_review, StringType())
 
 review_df = spark \
-    .read.json("data/reviews.json") \
+    .read.json("tools.json") \
     .where(col("helpful")[1] >= 5) \
     .withColumn("category", category_review_udf("helpful")) \
     .select("reviewText", "category") \
