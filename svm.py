@@ -75,7 +75,7 @@ train, test = data_prepared_df.randomSplit([0.8, 0.2], seed=205);
 
 # parameter tunning
 input_dim = len(train.select("features").first()[0])
-lsvc = LinearSVC(maxIter=100)
+lsvc = LinearSVC(maxIter=1000)
 
 paramGrid = ParamGridBuilder().addGrid(lsvc.regParam, [0.001, 0.005, 0.01, 0.05, 0.1, 0.2, 0.5])\
                                 .addGrid(lsvc.threshold, [-0.5, -0.2, 0.0, 0.2, 0.5])\
