@@ -81,8 +81,7 @@ replication_df = spark.createDataFrame(pd.DataFrame(list(range(1,10)),columns=['
 replicated_train = train.crossJoin(replication_df)
 
 # parameter tunning
-outSchema = StructType([StructField('replication_id', IntegerType(), True), 
-    StructField('regParam', DoubleType(), True),
+outSchema = StructType([StructField('regParam', DoubleType(), True),
     StructField('elasticNetParam', DoubleType(), True),
     StructField('AUC', DoubleType(), True),
     StructField('APC', DoubleType(), True)])
@@ -99,13 +98,11 @@ def random_tune(traindf):
     evaluator = BinaryClassificationEvaluator(rawPredictionCol='probability', labelCol = 'label')
     AUC = evaluator.evaluate(prediction, {evaluator.metricName: "areaUnderROC"})
     AUP = evaluator.evaluate(prediction, {evaluator.metricName: "areaUnderPR"})
-    result = pd.DataFrame({'replication_id', replication_id,
-                            'regParam', regParam,
+    result = pd.DataFrame({'regParam', regParam,
                             'elasticNetParam', elasticNetParam,
                             'AUC', AUC,
                             'APC', APC},
                             index=[0])
-    print(result)
     return result
 
 results = replicated_train.groupby("replication_id").apply(random_tune)
