@@ -1,6 +1,9 @@
+import pandas as pd
+import random
+
 from pyspark.sql import SparkSession
-# from pyspark.sql.types import ArrayType, StringType
-# from pyspark.sql.functions import udf
+from pyspark.sql.types import *
+import pyspark.sql.functions as F
 from pyspark.ml import Pipeline
 from pyspark.ml.feature import RegexTokenizer, StopWordsRemover, HashingTF, IDF 
 from pyspark.ml.feature import StringIndexer
@@ -16,7 +19,7 @@ from pyspark.sql.functions import rand
 
 spark = SparkSession \
     .builder \
-    .master("local[4]") \
+    .master("local[2]") \
     .appName("IsItHelpfull") \
     .getOrCreate()
 
@@ -73,6 +76,39 @@ data_prepared_df = data_prepared_df.orderBy(rand())
 data_prepared_df.select("label").show()
 train, test = data_prepared_df.randomSplit([0.9, 0.1], seed=205);
 
+# replicate the data into multiple copies
+replication_df = spark.createDataFrame(pd.DataFrame(list(range(1,10)),columns=['replication_id']))
+replicated_train = train.crossJoin(replication_df)
+
+# parameter tunning
+outSchema = StructType([StructField('replication_id', IntegerType(), True), 
+    StructField('regParam', DoubleType(), True),
+    StructField('elasticNetParam', DoubleType(), True),
+    StructField('AUC', DoubleType(), True),
+    StructField('APC', DoubleType(), True)])
+
+@F.pandas_udf(outSchema, F.PandasUDFType.GROUPED_MAP)
+def random_tune(traindf):
+    regParam = random.random()
+    elasticNetParam = random.random()
+    log_reg = LogisticRegression(featuresCol="features", labelCol="label", predictionCol="prediction",
+        maxIter=500, regParam=regParam, elasticNetParam=elasticNetParam)
+    trainset, validationset = traindf.randomSplit([0.8, 0.2], seed=205);
+    log_reg_fitted = log_reg.fit(trainset)
+    prediction = log_reg_fitted.transform(validationset)
+    evaluator = BinaryClassificationEvaluator(rawPredictionCol='probability', labelCol = 'label')
+    AUC = evaluator.evaluate(prediction, {evaluator.metricName: "areaUnderROC"})
+    AUP = evaluator.evaluate(prediction, {evaluator.metricName: "areaUnderPR"})
+    result = pd.DataFrame({'replication_id', replication_id,
+                            'regParam', regParam,
+                            'elasticNetParam', elasticNetParam,
+                            'AUC', AUC,
+                            'APC', APC},
+                            index=[0])
+    return result
+
+results = replicated_train.groupby("replication_id").apply(random_tune)
+results.sort(F.desc("AUC")).show()
 # train
 """
 log_reg = LogisticRegression(
@@ -85,6 +121,7 @@ log_reg_fitted = log_reg.fit(train)
 log_reg_fitted.transform(test).select("features", "label", "prediction").show()
 """
 
+"""
 # parameter tunning
 log_reg = LogisticRegression(maxIter = 500)
 paramGrid = ParamGridBuilder()\
@@ -108,3 +145,4 @@ AUC = evaluator.evaluate(prediction, {evaluator.metricName: "areaUnderROC"})
 AUP = evaluator.evaluate(prediction, {evaluator.metricName: "areaUnderPR"})
 print("Area under ROC = {}".format(AUC))
 print("Area under PR = {}".format(AUP))
+"""
