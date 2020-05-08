@@ -8,7 +8,7 @@ from pyspark.ml.feature import RegexTokenizer, StopWordsRemover, HashingTF, IDF,
 spark = SparkSession \
     .builder \
     .appName("IsItHelpfull") \
-    .master("local[1]") \
+    .master("local[2]") \
     .getOrCreate()
 
 # cluster mode
