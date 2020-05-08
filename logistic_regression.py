@@ -35,8 +35,8 @@ review_df = spark \
     .read.json("data/reviews.json") \
     .where(col("helpful")[1] >= 5) \
     .withColumn("category", category_review_udf("helpful")) \
-    .select("reviewText", "category") \
-    .cache()
+    .select("reviewText", "category") 
+#    .cache()
 
 """
 
