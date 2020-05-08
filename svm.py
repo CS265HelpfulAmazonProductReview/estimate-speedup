@@ -15,7 +15,7 @@ from pyspark.sql.functions import rand
 # local mode
 spark = SparkSession \
     .builder \
-    .master("local[2]") \
+    .master("local[4]") \
     .appName("IsItHelpfull") \
     .getOrCreate()
 
