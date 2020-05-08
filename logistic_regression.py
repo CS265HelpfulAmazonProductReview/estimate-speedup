@@ -38,7 +38,7 @@ review_df = spark \
     .select("reviewText", "category") \
     .cache()
 
-review_df.rdd.show()
+print(review_df.rdd)
 
 # up-sample the else category, so that #else = #good
 review_df_good = review_df.where(col("category") == "good").cache()
