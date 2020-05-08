@@ -105,6 +105,7 @@ def random_tune(traindf):
                             'AUC', AUC,
                             'APC', APC},
                             index=[0])
+    print(result)
     return result
 
 results = replicated_train.groupby("replication_id").apply(random_tune)
