@@ -76,6 +76,7 @@ data_prepared_df = data_prepared_df.orderBy(rand())
 data_prepared_df.select("label").show()
 train, test = data_prepared_df.randomSplit([0.9, 0.1], seed=205);
 
+"""
 # replicate the data into multiple copies
 replication_df = spark.createDataFrame(pd.DataFrame(list(range(1,10)),columns=['replication_id']))
 replicated_train = train.crossJoin(replication_df)
@@ -108,6 +109,11 @@ def random_tune(traindf):
 
 results = replicated_train.groupby("replication_id").apply(random_tune)
 results.sort(F.desc("AUC")).show()
+
+"""
+
+
+
 # train
 """
 log_reg = LogisticRegression(
