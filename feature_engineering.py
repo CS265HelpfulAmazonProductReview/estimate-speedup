@@ -15,7 +15,7 @@ cluster mode
 spark = SparkSession \
 	.builder \
 	.appName("IsItHelpfull") \
-	.config("spark.executor.instances", 4) \
+	.config("spark.executor.instances", 1) \
 	.config("spark.executor.cores", 1) \
 	.getOrCreate()
 
