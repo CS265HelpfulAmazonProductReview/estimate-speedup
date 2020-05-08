@@ -19,7 +19,7 @@ from pyspark.sql.functions import rand
 
 spark = SparkSession \
     .builder \
-    .master("local[1]") \
+    .master("local[4]") \
     .appName("IsItHelpfull") \
     .getOrCreate()
 
