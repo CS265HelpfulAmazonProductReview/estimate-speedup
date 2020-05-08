@@ -1,6 +1,8 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf, col, rand
-from pyspark.sql.types import StringType
+from pyspark.sql.types import *
+from pyspark.ml.feature import RegexTokenizer, StopWordsRemover, HashingTF, IDF 
+from pyspark.ml.feature import StringIndexer
 
 # local mode
 """
@@ -41,11 +43,10 @@ fraction = float(n_good)/n_else
 review_df_else_upsampled = \
 	review_df_else.sample(withReplacement=True, fraction=fraction)
 review_df_preprocessed = review_df_good.unionAll(review_df_else_upsampled)
-
+"""
 review_df_preprocessed.write.parquet(
 	"output/reviews_preprocessed.parquet"
 )
-"""
 review_preprocessed_df = spark \
 	.read.parquet("output/reviews_preprocessed.parquet")
 review_preprocessed_df.show()
