@@ -43,6 +43,7 @@ review_df_else_upsampled = \
     review_df_else.sample(withReplacement=True, fraction=fraction)
 review_df_preprocessed = review_df_good.unionAll(review_df_else_upsampled)
 
+"""
 # tokenize words
 tokenizer = \
     RegexTokenizer(inputCol="reviewText", outputCol="wordsRaw", pattern="\\W")
@@ -66,7 +67,7 @@ review_df_tfidf = inv_doc_freq_fitted.transform(data_df_tf)
 indexer = StringIndexer(inputCol="category", outputCol="label")
 indexer_fitted = indexer.fit(review_df_tfidf)
 review_prepared_df = indexer_fitted.transform(review_df_tfidf)
-"""
+
 review_prepared_df = review_prepared_df.orderBy(rand())
 train, test = data_prepared_df.randomSplit([0.9, 0.1], seed=205);
 """
