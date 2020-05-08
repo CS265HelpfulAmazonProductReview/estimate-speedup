@@ -25,7 +25,6 @@ def category_review(votes):
 
 category_review_udf = udf(category_review, StringType())
 
-# read json这里算是创建了distributed files吗？
 review_df = spark \
     .read.json("data/reviews.json") \
     .where(col("helpful")[1] >= 5) \
@@ -43,7 +42,7 @@ review_df_else_upsampled = \
     review_df_else.sample(withReplacement=True, fraction=fraction)
 review_df_preprocessed = review_df_good.unionAll(review_df_else_upsampled)
 
-"""
+
 # tokenize words
 tokenizer = \
     RegexTokenizer(inputCol="reviewText", outputCol="wordsRaw", pattern="\\W")
@@ -68,6 +67,7 @@ indexer = StringIndexer(inputCol="category", outputCol="label")
 indexer_fitted = indexer.fit(review_df_tfidf)
 review_prepared_df = indexer_fitted.transform(review_df_tfidf)
 
+"""
 review_prepared_df = review_prepared_df.orderBy(rand())
 train, test = data_prepared_df.randomSplit([0.9, 0.1], seed=205);
 """
