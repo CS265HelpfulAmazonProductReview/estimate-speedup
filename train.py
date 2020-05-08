@@ -108,6 +108,8 @@ def random_tune(traindf):
     return result
 
 results = replicated_train.groupby("replication_id").apply(random_tune)
+results_df = spark.createDataFrame(results)
+results_df.show()
 results.sort(F.desc("AUC")).show()
 # train
 """
