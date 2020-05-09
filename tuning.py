@@ -14,21 +14,23 @@ from pyspark.ml.evaluation import BinaryClassificationEvaluator
 from pyspark.mllib.evaluation import BinaryClassificationMetrics
 from pyspark.sql.functions import rand
 # local mode
-"""
+
 spark = SparkSession \
     .builder \
     .appName("IsItHelpfull") \
-    .master("local[*]") \
+    .master("local[1]") \
     .getOrCreate()
-"""
+
 
 # cluster mode
+"""
 spark = SparkSession \
     .builder \
     .appName("IsItHelpfull") \
     .config("spark.executor.instances", 1) \
     .config("spark.executor.cores", 1) \
     .getOrCreate()
+"""
 
 def category_review(votes):
     score = votes[0]/votes[1]
@@ -37,7 +39,7 @@ def category_review(votes):
 category_review_udf = udf(category_review, StringType())
 
 review_df = spark \
-    .read.json("tools.json") \
+    .read.json("clothing.json") \
     .where(col("helpful")[1] >= 5) \
     .withColumn("category", category_review_udf("helpful")) \
     .select("reviewText", "category") \
@@ -106,7 +108,7 @@ data_prepared_df = indexer_fitted.transform(data_df_tfidf)
 data_prepared_df = data_prepared_df.orderBy(rand())
 data_prepared_df.select("label").show()
 
-pool = ThreadPool(4)
+pool = ThreadPool(1)
 
 start = time.time()
 def random_tune(df, parameters):
