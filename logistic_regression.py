@@ -108,13 +108,13 @@ train, test = data_prepared_df.randomSplit([0.8, 0.2], seed=205);
 log_reg = LogisticRegression(maxIter = 500)
 paramGrid = ParamGridBuilder()\
     .addGrid(log_reg.regParam, [0.5, 0.2, 0.1, 0.05, 0.01, 0.0])\
-    .addGrid(log_reg.elasticNetParam, [1.0, 0.5, 0.0])\
+    .addGrid(log_reg.elasticNetParam, [0.2, 0.1, 0.0])\
     .build()
 tvs = TrainValidationSplit(estimator = log_reg,
                             estimatorParamMaps=paramGrid,
                             evaluator=BinaryClassificationEvaluator(),
                             trainRatio=0.8,
-                            parallelism=8)
+                            parallelism=2)
 log_reg_fitted = tvs.fit(train)
 
 prediction = log_reg_fitted.transform(test)
