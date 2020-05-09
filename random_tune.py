@@ -1,7 +1,6 @@
 import random
 import time
 
-from multiprocessing.pool import ThreadPool
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf, col, rand
 from pyspark.sql.types import *
@@ -106,7 +105,6 @@ data_prepared_df = indexer_fitted.transform(data_df_tfidf)
 data_prepared_df = data_prepared_df.orderBy(rand())
 data_prepared_df.select("label").show()
 
-pool = ThreadPool(4)
 
 start = time.time()
 def random_tune(df, parameters):
@@ -120,12 +118,12 @@ def random_tune(df, parameters):
     evaluator = BinaryClassificationEvaluator(rawPredictionCol='probability', labelCol = 'label')
     AUC = evaluator.evaluate(prediction, {evaluator.metricName: "areaUnderROC"})
     AUP = evaluator.evaluate(prediction, {evaluator.metricName: "areaUnderPR"})
-    print("reg: {} elastic: {} AUC {} AUP {}".format(regParam, elasticNetParam, AUC, AUP))
+    return "reg: {} elastic: {} AUC {} AUP {}".format(regParam, elasticNetParam, AUC, AUP)
 
 parameters = [[random.random()/10, random.random()/10] for i in range(9)]
 parameters.append([0.0, 0.0])
 
-pool.map(lambda parameters: random_tune(data_prepared_df, parameters), parameters)
+print(list(map(lambda parameters: random_tune(data_prepared_df, parameters), parameters)))
 
 end = time.time()
-print("Tuning time is {} secons in total".format(end - start))
+print("Tuning time is {} seconds in total".format(end - start))
