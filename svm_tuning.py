@@ -92,15 +92,15 @@ start = time.time()
 
 def random_tune(df, parameters):
     trainset, validationset = df.randomSplit([0.8, 0.2], seed=205)
-    lsvc = LinearSVC(maxIter=500, regParam=parameters[0], threshold=parameters[1])
+    lsvc = LinearSVC(maxIter=100, regParam=parameters[0], threshold=parameters[1])
     lsvc_fitted = lsvc.fit(trainset)
     prediction = lsvc_fitted.transform(validationset)
-    evaluator = BinaryClassificationEvaluator(rawPredictionCol='probability', labelCol = 'label')
+    evaluator = BinaryClassificationEvaluator(rawPredictionCol='prediction', labelCol = 'label')
     AUC = evaluator.evaluate(prediction, {evaluator.metricName: "areaUnderROC"})
     AUP = evaluator.evaluate(prediction, {evaluator.metricName: "areaUnderPR"})
     print("reg: {} threshold: {} AUC {} AUP {}".format(parameters[0], parameters[1], AUC, AUP))
 
-parameters = [[random.random()/10, (-0.2+0.4*random.random())] for i in range(19)]
+parameters = [[random.random()/10, (-0.2+0.4*random.random())] for i in range(9)]
 parameters.append([0.0, 0.0])
 
 pool.map(lambda parameters: random_tune(data_prepared_df, parameters), parameters)
