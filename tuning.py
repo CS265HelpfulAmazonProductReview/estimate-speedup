@@ -107,7 +107,7 @@ data_prepared_df.select("label").show()
 
 pool = ThreadPool(4)
 
-def randome_tune(df, parameters):
+def random_tune(df, parameters):
     regParam = parameters[0]
     elasticNetParam = parameters[1]
     log_reg = LogisticRegression(featuresCol="features", labelCol="label", predictionCol="prediction",
@@ -118,8 +118,10 @@ def randome_tune(df, parameters):
     evaluator = BinaryClassificationEvaluator(rawPredictionCol='probability', labelCol = 'label')
     AUC = evaluator.evaluate(prediction, {evaluator.metricName: "areaUnderROC"})
     AUP = evaluator.evaluate(prediction, {evaluator.metricName: "areaUnderPR"})
-    print("reg: {} elastic: {} AUC {} AUP {}", regParam, elasticNetParam, AUC, AUP)
+    print("reg: {} elastic: {} AUC {} AUP {}".format(regParam, elasticNetParam, AUC, AUP))
 
-parameters = [[random.random(), random.random()] for range(10)]
 
-pool.map(lambda parameters: randomtune(data_prepared_df, parameters), parameters)
+parameters = [[random.random()/10, random.random()/10] for i in range(9)]
+parameters.append([0.0, 0.0])
+
+pool.map(lambda parameters: random_tune(data_prepared_df, parameters), parameters)
