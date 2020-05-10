@@ -84,7 +84,7 @@ train, test = data_prepared_df.randomSplit([0.8, 0.2], seed=205);
 # parameter tunning
 lsvc = LinearSVC(maxIter=100, regParam=0.0, threshold=0.0)
 lsvc_fitted = lsvc.fit(train)
-prediciton = lsvc.transform(test)
+prediciton = lsvc_fitted.transform(test)
 evaluator = BinaryClassificationEvaluator(rawPredictionCol='prediction', labelCol = 'label')
 AUC = evaluator.evaluate(prediction, {evaluator.metricName: "areaUnderROC"})
 AUP = evaluator.evaluate(prediction, {evaluator.metricName: "areaUnderPR"})

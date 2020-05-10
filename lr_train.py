@@ -38,7 +38,7 @@ def category_review(votes):
 category_review_udf = udf(category_review, StringType())
 
 review_df = spark \
-    .read.json("tools.json") \
+    .read.json("clothing.json") \
     .where(col("helpful")[1] >= 5) \
     .withColumn("category", category_review_udf("helpful")) \
     .select("reviewText", "category") \
@@ -90,4 +90,4 @@ prediction = log_reg_fitted.transform(testset)
 evaluator = BinaryClassificationEvaluator(rawPredictionCol='probability', labelCol = 'label')
 AUC = evaluator.evaluate(prediction, {evaluator.metricName: "areaUnderROC"})
 AUP = evaluator.evaluate(prediction, {evaluator.metricName: "areaUnderPR"})
-print("AUC: {} AUPC: {}".format(AUC, AUP))
+print("AUC: {} AUP: {}".format(AUC, AUP))
